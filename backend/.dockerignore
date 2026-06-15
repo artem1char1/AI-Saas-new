@@ -1,0 +1,56 @@
+# Virtualenv & Python cache
+.venv/
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Python packaging & tooling
+*.egg-info/
+.eggs/
+build/
+dist/
+wheels/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# Git & docker meta
+.git
+.gitignore
+.gitattributes
+.dockerignore
+Dockerfile
+Dockerfile/
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+
+# IDE & OS
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Docs & local scripts (not copied into image today)
+README.md
+*.md
+scripts/
+
+# Alembic cache only (migrations folder kept for future use)
+alembic/**/__pycache__/
+alembic/**/*.pyc

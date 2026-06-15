@@ -1,3 +1,5 @@
+# Vite / frontend-local (root .gitignore covers shared patterns)
+
 # Logs
 logs
 *.log
@@ -7,12 +9,22 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies & build
 node_modules
 dist
 dist-ssr
-*.local
 
-# Editor directories and files
+# TypeScript
+*.tsbuildinfo
+node_modules/.vite/
+node_modules/.tmp/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Editor
 .vscode/*
 !.vscode/extensions.json
 .idea

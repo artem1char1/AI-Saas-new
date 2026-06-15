@@ -10,6 +10,7 @@ export function Header() {
       </Link>
       <nav className={styles.nav}>
         <Link to="/">Home</Link>
+        <Link to="/login">Login</Link>
       </nav>
     </header>
   )

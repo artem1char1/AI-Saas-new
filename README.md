@@ -41,6 +41,38 @@ API: http://localhost:8000
 Docs: http://localhost:8000/docs  
 Health: http://localhost:8000/api/health
 
+### Migrations (Alembic)
+
+```bash
+# apply all migrations
+alembic upgrade head
+
+# create migration after model changes
+alembic revision --autogenerate -m "describe change"
+alembic upgrade head
+
+# rollback last migration
+alembic downgrade -1
+```
+
+Models live in `app/models/`. Alembic reads DB credentials from `.env` via `app.core.config`.
+
+### Auth (JWT)
+
+Endpoints under `/api/auth`:
+
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | `/register` | Register user |
+| POST | `/login` | Login, returns access + refresh tokens |
+| POST | `/refresh` | Rotate refresh token |
+| POST | `/logout` | Revoke refresh token |
+| GET | `/me` | Current user (`Authorization: Bearer <access_token>`) |
+
+Required `.env` keys: `JWT_SECRET_KEY`, `JWT_ALGORITHM`, `JWT_ACCESS_TOKEN_EXPIRE_MINUTES`, `JWT_REFRESH_TOKEN_EXPIRE_DAYS`.
+
+Refresh tokens are stored in `auth_tokens` table (hashed). Access tokens are stateless JWT.
+
 ## Frontend
 
 ```bash
