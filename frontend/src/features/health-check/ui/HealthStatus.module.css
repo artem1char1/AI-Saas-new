@@ -1,0 +1,45 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  background: #ffffff;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.125rem;
+}
+
+.muted {
+  margin: 0;
+  color: #64748b;
+}
+
+.error {
+  margin: 0;
+  color: #dc2626;
+}
+
+.list {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.list div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.list dt {
+  color: #64748b;
+}
+
+.list dd {
+  margin: 0;
+  font-weight: 600;
+}
