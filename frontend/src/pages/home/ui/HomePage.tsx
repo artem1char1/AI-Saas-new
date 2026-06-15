@@ -9,7 +9,7 @@ export function HomePage() {
       <Header />
       <main className={styles.main}>
         <section className={styles.hero}>
-          <p className={styles.badge}>ФСД1</p>
+          <p className={styles.badge}>ФСД2</p>
           <h1>React + FastAPI starter</h1>
           <p className={styles.description}>
             Frontend is organized with FSD layers. Backend exposes a health endpoint
