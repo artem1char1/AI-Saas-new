@@ -25,7 +25,7 @@ services:
     container_name: ai-saas-backend
 
     env_file:
-      - .env
+      - ./backend/.env
 
     ports:
       - "8000:8000"
