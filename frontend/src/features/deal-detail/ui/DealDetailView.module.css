@@ -1,0 +1,215 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.breadcrumbs {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.meta {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  flex-wrap: wrap;
+}
+
+.headerActions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.pipelineCard {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.pipelineRow,
+.pipelineOutcomes {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.pipelineOutcomes {
+  justify-content: center;
+  gap: 2.5rem;
+  padding-top: 0.25rem;
+  border-top: 1px dashed var(--color-border);
+}
+
+.pipelineButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  padding: 0.25rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.75rem;
+  min-width: 0;
+}
+
+.pipelineButton:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.pipelineButton:hover:not(:disabled) .pipelineDot {
+  transform: scale(1.08);
+}
+
+.pipelineDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: var(--color-border);
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.pipelineDotActive {
+  width: 16px;
+  height: 16px;
+  background: var(--color-primary);
+}
+
+.pipelineDotWon {
+  background: var(--color-success);
+}
+
+.pipelineDotLost {
+  background: var(--color-danger);
+}
+
+.pipelineActive {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.625rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.infoRow:last-child {
+  border-bottom: none;
+}
+
+.nextActionBox {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.nextActionText {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.nextActionEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.activityItem {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.activityItem:last-child {
+  border-bottom: none;
+}
+
+.activityIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+
+.contactCard {
+  display: flex;
+  gap: 1rem;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.aiBox {
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  background: var(--color-primary-soft);
+}
+
+.riskHint {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-warning);
+}
+
+@media (max-width: 960px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pipelineRow,
+  .pipelineOutcomes {
+    overflow-x: auto;
+  }
+}

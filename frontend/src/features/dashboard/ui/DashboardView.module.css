@@ -1,0 +1,118 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.statCard {
+  padding: 1.25rem;
+}
+
+.statValue {
+  margin-top: 0.5rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.statDeltaSuccess {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--color-success);
+}
+
+.statDeltaDanger {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--color-danger);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.sectionCard h2 {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.activityRow {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.75rem;
+  align-items: start;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.activityRow:last-child {
+  border-bottom: none;
+}
+
+.activityIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+
+.dealRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.dealRow:last-child {
+  border-bottom: none;
+}
+
+.dealRowHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.aiCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  background: var(--color-primary-soft);
+}
+
+@media (max-width: 1100px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+}

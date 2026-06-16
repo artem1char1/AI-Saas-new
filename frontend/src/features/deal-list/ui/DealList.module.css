@@ -1,0 +1,205 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 4px 1fr auto;
+  gap: 0.875rem;
+  align-items: stretch;
+  padding: 0.875rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.statusBar {
+  border-radius: 999px;
+  align-self: stretch;
+  min-height: 100%;
+}
+
+.statusBarNew {
+  background: var(--color-primary);
+}
+
+.statusBarQualification {
+  background: #818cf8;
+}
+
+.statusBarProposal {
+  background: var(--color-warning);
+}
+
+.statusBarNegotiation {
+  background: #f97316;
+}
+
+.statusBarWon {
+  background: var(--color-success);
+}
+
+.statusBarLost {
+  background: var(--color-text-subtle);
+}
+
+.rowMain {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  min-width: 0;
+}
+
+.rowTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.titleLink {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  line-height: 1.35;
+  color: var(--color-text);
+}
+
+.titleLink:hover {
+  color: var(--color-primary);
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.375rem;
+  flex-shrink: 0;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.priorityLow {
+  background: var(--color-success-soft);
+  color: var(--color-success);
+}
+
+.priorityMedium {
+  background: var(--color-warning-soft);
+  color: var(--color-warning);
+}
+
+.priorityHigh {
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+}
+
+.statusNew {
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+
+.statusQualification {
+  background: rgba(129, 140, 248, 0.14);
+  color: #6366f1;
+}
+
+.statusProposal {
+  background: var(--color-warning-soft);
+  color: var(--color-warning);
+}
+
+.statusNegotiation {
+  background: rgba(249, 115, 22, 0.14);
+  color: #ea580c;
+}
+
+.statusWon {
+  background: var(--color-success-soft);
+  color: var(--color-success);
+}
+
+.statusLost {
+  background: var(--color-surface-muted);
+  color: var(--color-text-muted);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.75rem;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.amount {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.dates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+  font-size: 0.75rem;
+  color: var(--color-text-subtle);
+}
+
+.dateHighlight {
+  color: var(--color-text-muted);
+}
+
+.dateOverdue {
+  color: var(--color-danger);
+  font-weight: 600;
+}
+
+.rowActions {
+  display: flex;
+  align-items: flex-start;
+}
+
+@media (max-width: 640px) {
+  .row {
+    grid-template-columns: 4px 1fr;
+  }
+
+  .rowActions {
+    grid-column: 2;
+    justify-content: flex-end;
+  }
+
+  .rowTop {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .badges {
+    justify-content: flex-start;
+  }
+}

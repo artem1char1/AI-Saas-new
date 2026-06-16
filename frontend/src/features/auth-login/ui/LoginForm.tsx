@@ -1,23 +1,39 @@
 import { useState, type FormEvent } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 
-import { login, type AuthResponse } from '@/entities/auth'
+import { login } from '@/entities/auth'
+import { useAuth } from '@/features/auth-session'
+import { useI18n } from '@/shared/lib/i18n'
 
 export function LoginForm() {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { login: saveAuth } = useAuth()
+  const { t } = useI18n()
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setIsLoading(true)
-    setError(null)
 
     try {
-      const response: AuthResponse = await login({ email, password })
-      console.log('Auth success:', response)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed')
+      const response = await login({ email, password })
+      saveAuth(response)
+
+      const redirectTo =
+        typeof location.state === 'object' &&
+        location.state !== null &&
+        'from' in location.state &&
+        typeof location.state.from === 'string'
+          ? location.state.from
+          : '/dashboard'
+
+      navigate(redirectTo, { replace: true })
+    } catch {
+      // API errors are handled globally via toast
     } finally {
       setIsLoading(false)
     }
@@ -25,12 +41,14 @@ export function LoginForm() {
 
   return (
     <form onSubmit={(event) => void handleSubmit(event)}>
-      <h1>Login</h1>
+      <h2 className="pageTitle">{t('auth.loginTitle')}</h2>
+      <p className="pageSubtitle">{t('auth.loginSubtitle')}</p>
 
-      <div>
-        <label htmlFor="email">Email</label>
+      <div className="field" style={{ marginTop: '1.5rem' }}>
+        <label htmlFor="email">{t('common.email')}</label>
         <input
           id="email"
+          className="input"
           type="email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
@@ -38,10 +56,11 @@ export function LoginForm() {
         />
       </div>
 
-      <div>
-        <label htmlFor="password">Password</label>
+      <div className="field">
+        <label htmlFor="password">{t('common.password')}</label>
         <input
           id="password"
+          className="input"
           type="password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
@@ -49,11 +68,22 @@ export function LoginForm() {
         />
       </div>
 
-      {error && <p>{error}</p>}
+      <div style={{ marginBottom: '1rem' }}>
+        <Link to="/forgot-password" className="linkButton">
+          {t('auth.forgotLink')}
+        </Link>
+      </div>
 
-      <button type="submit" disabled={isLoading}>
-        {isLoading ? 'Loading...' : 'Sign in'}
+      <button type="submit" className="button buttonPrimary" style={{ width: '100%' }} disabled={isLoading}>
+        {isLoading ? t('auth.signingIn') : t('auth.signIn')}
       </button>
+
+      <p className="muted" style={{ marginTop: '1rem', fontSize: '0.875rem' }}>
+        {t('auth.noAccount')}{' '}
+        <Link to="/register" className="linkButton">
+          {t('auth.register')}
+        </Link>
+      </p>
     </form>
   )
 }

@@ -2,7 +2,7 @@ import uuid
 from datetime import date, datetime
 from decimal import Decimal
 
-from sqlalchemy import Date, DateTime, ForeignKey, Numeric, String
+from sqlalchemy import Date, DateTime, ForeignKey, Numeric, String, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -32,7 +32,9 @@ class Deal(Base, TimestampMixin):
     priority: Mapped[str | None] = mapped_column(String(50))
     expected_close_date: Mapped[date | None] = mapped_column(Date)
     last_contact_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    next_action: Mapped[str | None] = mapped_column(Text)
     next_action_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    loss_reason: Mapped[str | None] = mapped_column(String(500))
 
     organization: Mapped["Organization"] = relationship(back_populates="deals")
     contact: Mapped["Contact"] = relationship(back_populates="deals")

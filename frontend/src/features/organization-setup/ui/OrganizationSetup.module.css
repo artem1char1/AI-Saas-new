@@ -1,0 +1,27 @@
+.card {
+  max-width: 560px;
+}
+
+.orgName {
+  margin-top: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.onboarding {
+  width: 100%;
+}
+
+.step {
+  margin: 0 0 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.onboardingTitle {
+  margin: 0 0 0.5rem;
+  font-size: 1.5rem;
+}

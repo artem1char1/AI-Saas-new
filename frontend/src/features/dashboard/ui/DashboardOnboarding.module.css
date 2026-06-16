@@ -1,0 +1,69 @@
+.onboarding {
+  padding: 1.5rem;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1.25rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--color-text);
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--color-text-muted);
+}
+
+.checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  margin: 0 0 1.25rem;
+  padding: 0;
+  list-style: none;
+}
+
+.checklistItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9375rem;
+  color: var(--color-text);
+}
+
+.checklistItemDone {
+  color: var(--color-text-muted);
+}
+
+.checkIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.375rem;
+  height: 1.375rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--color-border-strong);
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-text-subtle);
+}
+
+.checkIconDone {
+  border-color: var(--color-success);
+  background: var(--color-success-soft);
+  color: var(--color-success);
+}
+
+.action {
+  display: inline-flex;
+}

@@ -1,22 +1,26 @@
-import { HealthStatus } from '@/features/health-check'
-import { Header } from '@/widgets/header'
+import { Link } from 'react-router-dom'
 
-import styles from './HomePage.module.css'
+import { OrganizationSetup } from '@/features/organization-setup'
+import { Header } from '@/widgets/header'
 
 export function HomePage() {
   return (
-    <div className={styles.page}>
+    <div>
       <Header />
-      <main className={styles.main}>
-        <section className={styles.hero}>
-          <p className={styles.badge}>ФСД2</p>
-          <h1>React + FastAPI starter</h1>
-          <p className={styles.description}>
-            Frontend is organized with FSD layers. Backend exposes a health endpoint
-            to verify the connection.
-          </p>
-        </section>
-        <HealthStatus />
+      <main>
+        <h1>CRM</h1>
+        <OrganizationSetup />
+        <nav>
+          <ul>
+            <li>
+              <Link to="/contacts">Contacts</Link>
+            </li>
+            <li>
+              <Link to="/deals">Deals</Link>
+            </li>
+          </ul>
+        </nav>
+        <p>Flow: create organization → contact → deal → activity on deal page.</p>
       </main>
     </div>
   )
