@@ -1,0 +1,58 @@
+services:
+
+  postgres:
+    image: postgres:17
+    container_name: ai-saas-postgres
+
+    environment:
+      POSTGRES_DB: aiSaas
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 6zYdlkMQ
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    ports:
+      - "5432:5432"
+
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: ./backend
+
+    container_name: ai-saas-backend
+
+    env_file:
+      - .env
+
+    ports:
+      - "8000:8000"
+
+    depends_on:
+      - postgres
+
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./frontend
+
+    container_name: ai-saas-frontend
+
+    ports:
+      - "3000:80"
+
+    depends_on:
+      - backend
+
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+
+networks:
+  app-network:
