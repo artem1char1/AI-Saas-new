@@ -10,10 +10,15 @@ RUN yarn install --frozen-lockfile --network-timeout 300000
 
 COPY . .
 
-ARG VITE_API_URL=/api
-ENV VITE_API_URL=$VITE_API_URL
+ARG VITE_API_URL=
 
-RUN yarn build
+RUN set -eu; \
+  if [ -z "${VITE_API_URL}" ] && [ -f .env ]; then \
+    VITE_API_URL="$(grep -E '^VITE_API_URL=' .env | cut -d= -f2- | tr -d '\r' || true)"; \
+  fi; \
+  export VITE_API_URL="${VITE_API_URL:-/api}"; \
+  echo "Building frontend with VITE_API_URL=${VITE_API_URL}"; \
+  yarn build
 
 FROM nginx:alpine
 

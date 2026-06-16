@@ -11,9 +11,9 @@ dist-ssr
 Dockerfile
 Dockerfile/
 
-# Environment & secrets
-.env
+# Environment: .env is needed for production docker build (VITE_API_URL).
 .env.*
+!.env
 !.env.example
 
 # Logs

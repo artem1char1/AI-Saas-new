@@ -96,26 +96,28 @@ docker compose up -d --build
 - Backend (direct): http://localhost:8000
 - API from browser: http://localhost:3000/api/... — nginx in the frontend container proxies to `backend:8000`
 
-**Important:** In production the frontend must not call port 8000 directly unless you configure it explicitly. By default `VITE_API_URL=/api` and nginx forwards `/api` to the backend service.
+**Frontend API URL:** set `VITE_API_URL` in `frontend/.env` (not in `backend/.env`). It is baked into the JS bundle at build time:
 
-After changing `nginx.conf` or env vars, rebuild the frontend image:
+```env
+# frontend/.env — proxy via nginx (recommended in docker-compose)
+VITE_API_URL=/api
+
+# or direct access to backend port from the browser:
+# VITE_API_URL=http://YOUR_HOST:8000/api
+```
+
+`backend/.env` is only for the API container (DB, JWT, CORS).
+
+Rebuild after changes:
 
 ```bash
 docker compose up -d --build frontend
 ```
 
-### Frontend on port 3000, API on port 8000 (without nginx proxy)
-
-If you serve the frontend build without proxying `/api`, rebuild with:
-
-```bash
-docker compose build frontend --build-arg VITE_API_URL=http://YOUR_HOST:8000/api
-```
-
-Add your frontend URL to `CORS_ORIGINS` in `backend/.env`, for example:
+Optional override from a root `.env` when running docker compose:
 
 ```env
-CORS_ORIGINS=["http://YOUR_HOST:3000"]
+VITE_API_URL=http://YOUR_HOST:8000/api
 ```
 
 ## FSD layers
