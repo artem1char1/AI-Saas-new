@@ -10,6 +10,9 @@ RUN yarn install --frozen-lockfile --network-timeout 300000
 
 COPY . .
 
+ARG VITE_API_URL=/api
+ENV VITE_API_URL=$VITE_API_URL
+
 RUN yarn build
 
 FROM nginx:alpine

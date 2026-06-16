@@ -86,6 +86,38 @@ App: http://localhost:5173
 
 Vite proxies `/api` requests to `http://localhost:8000`.
 
+## Production (Docker Compose)
+
+```bash
+docker compose up -d --build
+```
+
+- Frontend: http://localhost:3000
+- Backend (direct): http://localhost:8000
+- API from browser: http://localhost:3000/api/... — nginx in the frontend container proxies to `backend:8000`
+
+**Important:** In production the frontend must not call port 8000 directly unless you configure it explicitly. By default `VITE_API_URL=/api` and nginx forwards `/api` to the backend service.
+
+After changing `nginx.conf` or env vars, rebuild the frontend image:
+
+```bash
+docker compose up -d --build frontend
+```
+
+### Frontend on port 3000, API on port 8000 (without nginx proxy)
+
+If you serve the frontend build without proxying `/api`, rebuild with:
+
+```bash
+docker compose build frontend --build-arg VITE_API_URL=http://YOUR_HOST:8000/api
+```
+
+Add your frontend URL to `CORS_ORIGINS` in `backend/.env`, for example:
+
+```env
+CORS_ORIGINS=["http://YOUR_HOST:3000"]
+```
+
 ## FSD layers
 
 | Layer    | Purpose                          |
