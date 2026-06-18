@@ -116,3 +116,5 @@ export function useLocaleCode(): string {
   const { locale } = useI18n()
   return locale === 'ru' ? 'ru-RU' : 'en-US'
 }
+
+export { activityTypeLabel, lastContactLabel, riskFactorLabel } from './labels'

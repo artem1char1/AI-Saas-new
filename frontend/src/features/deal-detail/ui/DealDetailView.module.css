@@ -65,16 +65,38 @@
 
 .pipelineButton {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
   flex: 1;
-  padding: 0.25rem;
-  border: none;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  padding: 0.5rem 0.375rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
   background: transparent;
   cursor: pointer;
-  font-size: 0.75rem;
-  min-width: 0;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.pipelineButton:hover:not(:disabled) {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border);
+}
+
+.pipelineButton:hover:not(:disabled) .pipelineLabel {
+  color: var(--color-text);
+}
+
+.pipelineButton:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.pipelineButtonCurrent {
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface));
+  border-color: color-mix(in srgb, var(--color-primary) 25%, var(--color-border));
 }
 
 .pipelineButton:disabled {
@@ -82,13 +104,29 @@
   opacity: 0.7;
 }
 
+.pipelineStage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  min-width: 0;
+}
+
+.pipelineLabel {
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
 .pipelineButton:hover:not(:disabled) .pipelineDot {
   transform: scale(1.08);
 }
 
 .pipelineDot {
-  width: 12px;
-  height: 12px;
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
   border-radius: 999px;
   background: var(--color-border);
   transition: transform 0.15s ease, background-color 0.15s ease;
@@ -111,6 +149,19 @@
 .pipelineActive {
   color: var(--color-primary);
   font-weight: 600;
+}
+
+.priorityGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.amount {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-text);
 }
 
 .grid {
@@ -204,6 +255,7 @@
 }
 
 @media (max-width: 960px) {
+  .priorityGrid,
   .grid {
     grid-template-columns: 1fr;
   }

@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from sqlalchemy.exc import IntegrityError
 
+from app.api.routes.dashboard import router as dashboard_router
+from app.api.routes.ai import router as ai_router
 from app.api.routes.search import router as search_router
 from app.api.routes.activities import router as activities_router
 from app.api.routes.auth import router as auth_router
@@ -42,6 +44,8 @@ app.include_router(search_router, prefix=settings.api_prefix)
 app.include_router(contacts_router, prefix=settings.api_prefix)
 app.include_router(deals_router, prefix=settings.api_prefix)
 app.include_router(activities_router, prefix=settings.api_prefix)
+app.include_router(ai_router, prefix=settings.api_prefix)
+app.include_router(dashboard_router, prefix=settings.api_prefix)
 
 
 @app.get("/")

@@ -6,7 +6,6 @@ import {
   DEAL_OUTCOME_STAGES,
   DEAL_PIPELINE_STAGES,
   dealStageIndex,
-  dealStatusProgress,
   isDealOutcome,
   loadOpenDeal,
   patchDeal,
@@ -18,11 +17,14 @@ import {
   setOpenDeal,
   type Deal,
 } from '@/entities/deal'
+import { fetchDealRisk, type DealRisk } from '@/entities/deal-risk'
+import { DealRiskPanel } from '@/features/deal-risk'
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks'
-import { useI18n, useLocaleCode } from '@/shared/lib/i18n'
+import { useI18n, useLocaleCode, activityTypeLabel } from '@/shared/lib/i18n'
 import { DetailPageSkeleton } from '@/shared/ui/skeleton'
 import { Calendar, FileText, Mail, Phone } from '@/shared/ui/icons'
 
+import { DealNextActionCard } from './DealNextActionCard'
 import styles from './DealDetailView.module.css'
 
 function activityIcon(type: string) {
@@ -53,23 +55,6 @@ function resolveLastContactAt(deal: Deal, activities: Activity[]): string | null
   return new Date(Math.max(...timestamps)).toISOString()
 }
 
-function calculateRiskKey(deal: Deal): 'high' | 'medium' | 'low' {
-  if (isDealOutcome(deal.status)) return 'low'
-
-  let score = 0
-  if (deal.priority === 'high') score += 2
-  else if (deal.priority === 'medium') score += 1
-
-  if (deal.status === 'negotiation') score += 2
-  else if (deal.status === 'proposal') score += 1
-
-  if (!deal.next_action?.trim()) score += 3
-
-  if (score >= 4) return 'high'
-  if (score >= 2) return 'medium'
-  return 'low'
-}
-
 export function DealDetailView() {
   const { dealId } = useParams<{ dealId: string }>()
   const dispatch = useAppDispatch()
@@ -83,11 +68,30 @@ export function DealDetailView() {
   const hasError = useAppSelector(selectOpenDealError)
 
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false)
+  const [dealRisk, setDealRisk] = useState<DealRisk | null>(null)
+  const [isRiskLoading, setIsRiskLoading] = useState(true)
 
   useEffect(() => {
     if (!dealId) return
     void dispatch(loadOpenDeal(dealId))
   }, [dealId, dispatch])
+
+  useEffect(() => {
+    if (!deal?.id) return
+
+    const loadRisk = async () => {
+      setIsRiskLoading(true)
+      try {
+        setDealRisk(await fetchDealRisk(deal.id))
+      } catch {
+        setDealRisk(null)
+      } finally {
+        setIsRiskLoading(false)
+      }
+    }
+
+    void loadRisk()
+  }, [deal?.id, deal?.updated_at, activities.length])
 
   const lastContactAt = useMemo(
     () => (deal ? resolveLastContactAt(deal, activities) : null),
@@ -113,10 +117,9 @@ export function DealDetailView() {
   if (hasError) return <p className="error">{t('deals.notFound')}</p>
   if (isLoading || !deal || isWrongDeal) return <DetailPageSkeleton />
 
-  const progress = dealStatusProgress(deal.status)
   const currentStageIndex = dealStageIndex(deal.status)
+  const riskKey = dealRisk?.is_closed ? 'low' : (dealRisk?.risk_level ?? 'low')
   const currentOutcome = isDealOutcome(deal.status) ? deal.status : null
-  const riskKey = calculateRiskKey(deal)
 
   const riskClass =
     riskKey === 'high' ? 'badgeDanger' : riskKey === 'medium' ? 'badgeWarning' : 'badgeSuccess'
@@ -140,16 +143,22 @@ export function DealDetailView() {
       <button
         key={stage}
         type="button"
-        className={styles.pipelineButton}
+        className={`${styles.pipelineButton} ${isCurrent ? styles.pipelineButtonCurrent : ''}`}
         disabled={isUpdatingStatus}
         onClick={() => void handleStageClick(stage)}
+        aria-current={isCurrent ? 'step' : undefined}
       >
-        <span
-          className={`${styles.pipelineDot} ${isActive || isCurrent ? styles.pipelineDotActive : ''} ${
-            variant === 'outcome' && stage === 'won' ? styles.pipelineDotWon : ''
-          } ${variant === 'outcome' && stage === 'lost' ? styles.pipelineDotLost : ''}`}
-        />
-        <span className={isCurrent ? styles.pipelineActive : 'muted'}>{statusLabel(stage)}</span>
+        <span className={styles.pipelineStage}>
+          <span
+            className={`${styles.pipelineDot} ${isActive || isCurrent ? styles.pipelineDotActive : ''} ${
+              variant === 'outcome' && stage === 'won' ? styles.pipelineDotWon : ''
+            } ${variant === 'outcome' && stage === 'lost' ? styles.pipelineDotLost : ''}`}
+            aria-hidden
+          />
+          <span className={`${styles.pipelineLabel} ${isCurrent ? styles.pipelineActive : ''}`}>
+            {statusLabel(stage)}
+          </span>
+        </span>
       </button>
     )
   }
@@ -169,8 +178,9 @@ export function DealDetailView() {
             <span className={`badge ${riskClass}`}>{t(`deals.risk.${riskKey}`)}</span>
           </div>
           <div className={styles.meta}>
-            <span>{deal.amount ? `₽${Number(deal.amount).toLocaleString(locale)}` : t('common.noAmount')}</span>
-            <span>{progress}%</span>
+            <span className={styles.amount}>
+              {deal.amount ? `₽${Number(deal.amount).toLocaleString(locale)}` : t('common.noAmount')}
+            </span>
             <span className="badge badgeNeutral">{statusLabel(deal.status)}</span>
           </div>
         </div>
@@ -194,6 +204,16 @@ export function DealDetailView() {
         <div className={styles.pipelineOutcomes}>
           {DEAL_OUTCOME_STAGES.map((stage) => renderStageButton(stage, 'outcome'))}
         </div>
+      </div>
+
+      <div className={styles.priorityGrid}>
+        <DealRiskPanel
+          dealId={deal.id}
+          risk={dealRisk}
+          isLoading={isRiskLoading}
+          refreshKey={`${deal.updated_at}-${activities.length}`}
+        />
+        <DealNextActionCard deal={deal} />
       </div>
 
       <div className={styles.grid}>
@@ -234,59 +254,6 @@ export function DealDetailView() {
         </section>
 
         <section className="card">
-          <div className="cardHeader">
-            <h2>{t('deals.nextAction')}</h2>
-            <Link to={`/deals/${deal.id}/edit`} className="linkButton">
-              {t('common.edit')}
-            </Link>
-          </div>
-          <div className="cardBody">
-            {deal.next_action ? (
-              <div className={styles.nextActionBox}>
-                <p className={styles.nextActionText}>{deal.next_action}</p>
-                {deal.next_action_at && (
-                  <p className="muted">
-                    {t('deals.nextActionAt')}: {formatDateTime(deal.next_action_at, locale)}
-                  </p>
-                )}
-              </div>
-            ) : (
-              <div className={styles.nextActionEmpty}>
-                <p className="muted">{t('deals.nextActionEmpty')}</p>
-                <Link to={`/deals/${deal.id}/edit`} className="button buttonSecondary">
-                  {t('deals.setNextAction')}
-                </Link>
-              </div>
-            )}
-          </div>
-        </section>
-
-        <section className="card">
-          <div className="cardHeader">
-            <h2>{t('deals.activities')}</h2>
-            <Link to={`/activities/new?deal_id=${deal.id}&contact_id=${deal.contact_id}`} className="linkButton">
-              + {t('deals.addActivity')}
-            </Link>
-          </div>
-          <div className="cardBody">
-            {activities.length === 0 ? (
-              <div className="emptyState">{t('deals.activitiesEmpty')}</div>
-            ) : (
-              activities.map((activity) => (
-                <div key={activity.id} className={styles.activityItem}>
-                  <div className={styles.activityIcon}>{activityIcon(activity.type)}</div>
-                  <div>
-                    <strong>{activity.type}</strong>
-                    <p className="muted">{activity.content ?? t('common.noContent')}</p>
-                    <span className="muted">{formatDateTime(activity.happened_at, locale)}</span>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </section>
-
-        <section className="card">
           <div className="cardHeader"><h2>{t('common.contact')}</h2></div>
           <div className="cardBody">
             {contact ? (
@@ -305,22 +272,32 @@ export function DealDetailView() {
             )}
           </div>
         </section>
-
-        <section className="card">
-          <div className="cardHeader"><h2>{t('dashboard.aiInsights')}</h2></div>
-          <div className="cardBody">
-            <div className={styles.aiBox}>
-              <h3>{t('dashboard.aiTitle')}</h3>
-              <p className="muted">
-                {t('deals.aiRiskText', { risk: t(`deals.risk.${riskKey}`) })}
-              </p>
-              {!deal.next_action?.trim() && !isDealOutcome(deal.status) && (
-                <p className={styles.riskHint}>{t('deals.noNextActionRisk')}</p>
-              )}
-            </div>
-          </div>
-        </section>
       </div>
+
+      <section className="card">
+        <div className="cardHeader">
+          <h2>{t('deals.activities')}</h2>
+          <Link to={`/activities/new?deal_id=${deal.id}&contact_id=${deal.contact_id}`} className="linkButton">
+            + {t('deals.addActivity')}
+          </Link>
+        </div>
+        <div className="cardBody">
+          {activities.length === 0 ? (
+            <div className="emptyState">{t('deals.activitiesEmpty')}</div>
+          ) : (
+            activities.map((activity) => (
+              <div key={activity.id} className={styles.activityItem}>
+                <div className={styles.activityIcon}>{activityIcon(activity.type)}</div>
+                <div>
+                  <strong>{activityTypeLabel(activity.type, t)}</strong>
+                  <p className="muted">{activity.content ?? t('common.noContent')}</p>
+                  <span className="muted">{formatDateTime(activity.happened_at, locale)}</span>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </section>
     </div>
   )
 }

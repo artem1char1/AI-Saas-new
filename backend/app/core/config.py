@@ -19,6 +19,10 @@ class Settings(BaseSettings):
     jwt_access_token_expire_minutes: int = 15
     jwt_refresh_token_expire_days: int = 7
 
+    ai_provider: str = "groq"
+    groq_api_key: str = ""
+    groq_model: str = "llama-3.3-70b-versatile"
+
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
     @computed_field

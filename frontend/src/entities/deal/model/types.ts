@@ -30,4 +30,8 @@ export type DealCreate = {
 
 export type DealUpdate = Partial<DealCreate>
 
-export type DealPatch = Partial<DealCreate>
+export type DealPatch = Omit<Partial<DealCreate>, 'next_action' | 'next_action_at' | 'loss_reason'> & {
+  next_action?: string | null
+  next_action_at?: string | null
+  loss_reason?: string | null
+}

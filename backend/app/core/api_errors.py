@@ -22,6 +22,10 @@ def not_found(code: str, message: str) -> HTTPException:
     return api_error(status.HTTP_404_NOT_FOUND, code, message)
 
 
+def forbidden(code: str, message: str) -> HTTPException:
+    return api_error(status.HTTP_403_FORBIDDEN, code, message)
+
+
 def extract_detail_message(detail: Any) -> str:
     if isinstance(detail, str):
         return detail

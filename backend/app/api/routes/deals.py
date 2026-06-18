@@ -6,10 +6,13 @@ from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.core.deps import get_current_organization
+from app.models.activity import Activity
 from app.models.contact import Contact
 from app.models.deal import Deal
 from app.models.organization import Organization
 from app.schemas.deal import DealCreate, DealPatch, DealResponse, DealUpdate
+from app.schemas.deal_risk import DealRiskResponse
+from app.services.deal_risk_service import calculate_deal_risk
 
 router = APIRouter(prefix="/deals", tags=["deals"])
 
@@ -52,6 +55,39 @@ def create_deal(
     db.commit()
     db.refresh(deal)
     return deal
+
+
+@router.get("/{deal_id}/risk", response_model=DealRiskResponse)
+def get_deal_risk(
+    deal_id: UUID,
+    organization: Organization = Depends(get_current_organization),
+    db: Session = Depends(get_db),
+) -> DealRiskResponse:
+    deal = _get_deal_or_404(db, organization.id, deal_id)
+    activities = list(
+        db.scalars(
+            select(Activity)
+            .where(
+                Activity.organization_id == organization.id,
+                Activity.deal_id == deal.id,
+            )
+            .order_by(Activity.happened_at.desc())
+        ).all()
+    )
+    risk = calculate_deal_risk(deal, activities)
+    return DealRiskResponse(
+        deal_id=deal.id,
+        risk_score=risk.risk_score,
+        risk_level=risk.risk_level,
+        factors=[
+            {"kind": factor.kind, "points": factor.points, "days": factor.days}
+            for factor in risk.factors
+        ],
+        reasons=risk.reasons,
+        next_best_action=risk.next_best_action,
+        days_since_last_contact=risk.days_since_last_contact,
+        is_closed=risk.is_closed,
+    )
 
 
 @router.get("/{deal_id}", response_model=DealResponse)

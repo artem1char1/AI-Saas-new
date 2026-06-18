@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import { deleteActivity, fetchActivities, type Activity } from '@/entities/activity'
-import { useI18n, useLocaleCode } from '@/shared/lib/i18n'
+import { useI18n, useLocaleCode, activityTypeLabel } from '@/shared/lib/i18n'
 import { EmptyState } from '@/shared/ui/EmptyState'
 import { ListRowsOnlySkeleton } from '@/shared/ui/skeleton'
 import { Calendar, FileText, Mail, Phone } from '@/shared/ui/icons'
@@ -73,7 +73,7 @@ export function ActivityList() {
               <div key={activity.id} className={styles.row}>
                 <div className={styles.icon}>{activityIcon(activity.type)}</div>
                 <div className={styles.content}>
-                  <strong>{activity.type}</strong>
+                  <strong>{activityTypeLabel(activity.type, t)}</strong>
                   <p className="muted">{activity.content ?? t('common.noContent')}</p>
                   <Link to={`/deals/${activity.deal_id}`} className="linkButton">{t('activities.viewDeal')}</Link>
                 </div>

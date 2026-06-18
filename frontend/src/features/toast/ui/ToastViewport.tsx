@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 
+import { useI18n } from '@/shared/lib/i18n'
+
 import type { ToastItem } from '../model/types'
 
 import styles from './ToastViewport.module.css'
@@ -44,6 +46,7 @@ function ToastCard({
   toast: ToastItem
   onDismiss: (id: string) => void
 }) {
+  const { t } = useI18n()
   const [isLeaving, setIsLeaving] = useState(false)
 
   useEffect(() => {
@@ -78,7 +81,7 @@ function ToastCard({
       <button
         type="button"
         className={styles.closeButton}
-        aria-label="Close"
+        aria-label={t('common.close')}
         onClick={() => {
           setIsLeaving(true)
           window.setTimeout(() => onDismiss(toast.id), 200)
