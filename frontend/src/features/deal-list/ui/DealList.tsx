@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import { fetchContacts, type Contact } from '@/entities/contact'
-import { deleteDeal, fetchDeals, type Deal } from '@/entities/deal'
+import { DEAL_PRIORITIES, DEAL_STATUSES, deleteDeal, fetchDeals, type Deal } from '@/entities/deal'
 import { useI18n, useLocaleCode } from '@/shared/lib/i18n'
 import { EmptyState } from '@/shared/ui/EmptyState'
 import { ListRowsOnlySkeleton } from '@/shared/ui/skeleton'
@@ -73,6 +73,10 @@ export function DealList() {
   const [deals, setDeals] = useState<Deal[]>([])
   const [contacts, setContacts] = useState<Contact[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState('')
+  const [priorityFilter, setPriorityFilter] = useState('')
+  const [contactFilter, setContactFilter] = useState('')
 
   const load = async () => {
     setIsLoading(true)
@@ -106,6 +110,34 @@ export function DealList() {
     return translated === key ? priority : translated
   }
 
+  const contactNameMap = useMemo(() => {
+    return new Map(contacts.map((contact) => [contact.id, contact.name]))
+  }, [contacts])
+
+  const filteredDeals = useMemo(() => {
+    const normalizedSearch = search.trim().toLowerCase()
+
+    return deals.filter((deal) => {
+      const matchesSearch =
+        normalizedSearch.length === 0 ||
+        deal.title.toLowerCase().includes(normalizedSearch) ||
+        (contactNameMap.get(deal.contact_id) ?? '').toLowerCase().includes(normalizedSearch)
+
+      const matchesStatus = !statusFilter || deal.status === statusFilter
+      const matchesPriority = !priorityFilter || (deal.priority ?? 'medium') === priorityFilter
+      const matchesContact = !contactFilter || deal.contact_id === contactFilter
+
+      return matchesSearch && matchesStatus && matchesPriority && matchesContact
+    })
+  }, [contactFilter, contactNameMap, deals, priorityFilter, search, statusFilter])
+
+  const resetFilters = () => {
+    setSearch('')
+    setStatusFilter('')
+    setPriorityFilter('')
+    setContactFilter('')
+  }
+
   const handleDelete = async (id: string) => {
     try {
       await deleteDeal(id)
@@ -129,6 +161,54 @@ export function DealList() {
 
       <section className="card">
         <div className="cardBody">
+          <div className={styles.filters}>
+            <input
+              className="input"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder={t('deals.filters.searchPlaceholder')}
+            />
+            <select
+              className="select"
+              value={statusFilter}
+              onChange={(event) => setStatusFilter(event.target.value)}
+            >
+              <option value="">{t('deals.filters.allStatuses')}</option>
+              {DEAL_STATUSES.map((status) => (
+                <option key={status} value={status}>
+                  {statusLabel(status)}
+                </option>
+              ))}
+            </select>
+            <select
+              className="select"
+              value={priorityFilter}
+              onChange={(event) => setPriorityFilter(event.target.value)}
+            >
+              <option value="">{t('deals.filters.allPriorities')}</option>
+              {DEAL_PRIORITIES.map((priority) => (
+                <option key={priority} value={priority}>
+                  {priorityLabel(priority)}
+                </option>
+              ))}
+            </select>
+            <select
+              className="select"
+              value={contactFilter}
+              onChange={(event) => setContactFilter(event.target.value)}
+            >
+              <option value="">{t('deals.filters.allContacts')}</option>
+              {contacts.map((contact) => (
+                <option key={contact.id} value={contact.id}>
+                  {contact.name}
+                </option>
+              ))}
+            </select>
+            <button type="button" className="button buttonGhost" onClick={resetFilters}>
+              {t('deals.filters.reset')}
+            </button>
+          </div>
+
           {isLoading ? (
             <ListRowsOnlySkeleton rows={6} />
           ) : deals.length === 0 ? (
@@ -138,9 +218,15 @@ export function DealList() {
               description={t('deals.emptyDescription')}
               action={{ label: t('deals.create'), to: '/deals/new' }}
             />
+          ) : filteredDeals.length === 0 ? (
+            <EmptyState
+              icon={<Briefcase size={22} />}
+              title={t('deals.filters.emptyTitle')}
+              description={t('deals.filters.emptyDescription')}
+            />
           ) : (
             <div className={styles.list}>
-              {deals.map((deal) => {
+              {filteredDeals.map((deal) => {
                 const showOverdue =
                   deal.expected_close_date &&
                   isOverdue(deal.expected_close_date) &&

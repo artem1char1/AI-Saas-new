@@ -215,6 +215,15 @@ export const en: TranslationSchema = {
     listUpdated: 'Updated',
     labels: 'Labels',
     addLabel: 'Add label',
+    filters: {
+      searchPlaceholder: 'Search by deal title or contact',
+      allStatuses: 'All statuses',
+      allPriorities: 'All priorities',
+      allContacts: 'All contacts',
+      reset: 'Reset',
+      emptyTitle: 'No deals match these filters',
+      emptyDescription: 'Try changing your search parameters or reset filters.',
+    },
     riskAnalysis: {
       title: 'Deal risk',
       score: 'Risk score',

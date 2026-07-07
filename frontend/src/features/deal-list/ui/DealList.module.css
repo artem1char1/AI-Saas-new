@@ -11,6 +11,13 @@
   gap: 1rem;
 }
 
+.filters {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.4fr) repeat(3, minmax(160px, 1fr)) auto;
+  gap: 0.625rem;
+  margin-bottom: 1rem;
+}
+
 .list {
   display: flex;
   flex-direction: column;
@@ -185,6 +192,10 @@
 }
 
 @media (max-width: 640px) {
+  .filters {
+    grid-template-columns: 1fr;
+  }
+
   .row {
     grid-template-columns: 4px 1fr;
   }

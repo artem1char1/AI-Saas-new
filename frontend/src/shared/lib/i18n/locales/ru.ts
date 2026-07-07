@@ -213,6 +213,15 @@ export const ru = {
     listUpdated: 'Обновлена',
     labels: 'Метки',
     addLabel: 'Добавить метку',
+    filters: {
+      searchPlaceholder: 'Поиск по названию сделки или контакту',
+      allStatuses: 'Все статусы',
+      allPriorities: 'Все приоритеты',
+      allContacts: 'Все контакты',
+      reset: 'Сбросить',
+      emptyTitle: 'По этим фильтрам ничего не найдено',
+      emptyDescription: 'Измените параметры поиска или сбросьте фильтры.',
+    },
     riskAnalysis: {
       title: 'Риск по сделке',
       score: 'Оценка риска',
